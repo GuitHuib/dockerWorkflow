@@ -21,10 +21,6 @@ jobs:
       - name: Build JAR file
         run: mvn clean package -DskipTests
 
-      # Debugging step: List target directory to confirm JAR file exists
-      - name: Check if JAR file exists
-        run: ls -l target/
-
       - name: Login to Docker Hub
         uses: docker/login-action@v3
         with:
@@ -42,4 +38,19 @@ jobs:
         with:
           context: .
           push: true
-          tags: ryansimages/app:latest
+          tags: ${{ vars.DOCKER_USERNAME }}/demo-app:latest
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build-and-push
+    steps:
+      - name: SSH into EC2 and deploy Docker container
+        uses: appleboy/ssh-action@v0.1.7
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            docker pull ${{ vars.DOCKER_USERNAME }}/demo-app:latest
+            docker stop demo-container || true
+            docker rm demo-container || true
+            docker run -d -p 8080:8080 --name demo-container ${{ vars.DOCKER_USERNAME }}/demo-app:latest
