@@ -59,9 +59,11 @@ jobs:
               sudo yum install -y docker
               sudo systemctl start docker
               sudo systemctl enable docker
+              sudo usermod -aG docker $USER  # Add user to docker group
+              exec sudo su -l $USER  # Refresh user permissions
             fi
             
-            docker pull ${{ vars.DOCKER_USERNAME }}/app:latest
+            docker pull ${{ vars.DOCKERHUB_USERNAME }}/app:latest
             docker stop demo-container || true
             docker rm demo-container || true
-            docker run -d -p 8080:8080 --name demo-container ${{ vars.DOCKER_USERNAME }}/app:latest
+            docker run -d -p 8080:8080 --name demo-container ${{ vars.DOCKERHUB_USERNAME }}/app:latest
