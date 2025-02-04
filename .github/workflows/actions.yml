@@ -1,0 +1,22 @@
+name: Hello World
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  greeting:
+    runs-on: ubuntu-latest
+    steps:
+      # Add a step to check-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v4
+
+      - name: Run a one-line script
+        # add a step to echo Hello World in a single line #
+        run: echo Hello, world!
+
+      - name: Run a multi-line script
+        # add a step to echo additional text over two or more lines, using github context to access your username and the action name #
+        run: |
+          echo My username is ${{ github.actor }},
+          echo My actions is ${{ github.action }}.
