@@ -10,11 +10,6 @@ provider "aws" {
   region = "us-east-1"
 }
 
-# resource "aws_key_pair" "ssh_key" {
-#   key_name = "DemoKeyPair"
-#   public_key = var.EC2_PUBLIC_KEY
-# }
-
 resource "aws_security_group" "allow_ssh_http" {
   name = "allow_ssh_http"
   description = "Allow SSH and HTTP access"
@@ -44,7 +39,6 @@ resource "aws_security_group" "allow_ssh_http" {
 resource "aws_instance" "terraform_server" {
   ami = "ami-0c614dee691cbbf37"
   instance_type = "t2.micro"
-  # key_name = aws_key_pair.ssh_key.key_name
   key_name = "DemoKeyPair"
   security_groups = [aws_security_group.allow_ssh_http.name]
 
