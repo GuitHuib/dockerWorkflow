@@ -1,0 +1,27 @@
+- name: Configure EC2 Instance
+  hosts: all
+  become: true
+  remote_user: ec2-user
+  tasks:
+    - name: Install Docker
+      yum:
+        name: docker
+        state: present
+
+    - name: Start and enable docker
+      service:
+        name: docker
+        state: started
+        enabled: yes
+
+    - name: Add ec2-user to docker group
+      user:
+        name: ec2-user
+        group: docker
+        append: yes
+
+    - name: Pull docker image
+      command: docker pull ryansimages/app:latest
+
+    - name: Run docker container
+      command: docker run -d -p 8080:8080 --name demo-container ryansimages/app:latest

@@ -31,3 +31,30 @@ build/
 
 ### VS Code ###
 .vscode/
+
+# Terraform state files (contain sensitive data)
+*.tfstate
+*.tfstate.backup
+
+# Terraform configuration directory
+.terraform/
+.terraform.lock.hcl
+
+# Crash logs (if Terraform crashes)
+crash.log
+
+# Ignore any Terraform execution plans
+*.tfplan
+
+# Ignore sensitive variables files
+*.tfvars
+*.tfvars.json
+
+# Ignore temporary files
+.terraformrc
+terraform.rc
+
+# Ignore editor-specific or OS-specific files (optional)
+.idea/
+.DS_Store
+Thumbs.db
