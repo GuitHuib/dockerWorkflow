@@ -33,9 +33,6 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Debug Variables
-        run: echo "DOCKERHUB_USERNAME=${{ vars.DOCKERHUB_USERNAME }}"
-
       - name: Build and push
         uses: docker/build-push-action@v6
         with:
