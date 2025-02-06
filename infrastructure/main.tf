@@ -14,6 +14,13 @@ provider "aws" {
 
 variable "ec2_ssh_key" {}
 
+#check if security group has already been created
+data "aws_security_group" "existing_sg" {
+  filter {
+    name = "group_name"
+    values = ["demo_app_security"]
+  }
+}
 #set security rules for instance
 resource "aws_security_group" "allow_ssh_http" {
   name = "demo_app_security"
