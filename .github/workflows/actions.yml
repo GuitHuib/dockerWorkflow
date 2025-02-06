@@ -100,3 +100,4 @@ jobs:
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > /tmp/private_key.pem
           chmod 600 /tmp/private_key.pem
           ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i '${{ secrets.EC2_PUBLIC_IP}},' -u ec2-user --private-key /tmp/private_key.pem playbook.yml
+        working-directory: infrastructure
