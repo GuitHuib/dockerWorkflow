@@ -12,6 +12,8 @@ provider "aws" {
   region = "us-east-1"
 }
 
+variable "ec2_ssh_key" {}
+
 #set security rules for instance
 resource "aws_security_group" "allow_ssh_http" {
   name = "allow_ssh_http"
@@ -60,14 +62,15 @@ resource "aws_instance" "terraform_server" {
     connection {
       type = "ssh"
       user = "ec2-user"
-      private_key = file("/mnt/c/Users/rwall/Downloads/DemoKeyPair.pem")
+      # private_key = file("/mnt/c/Users/rwall/Downloads/DemoKeyPair.pem")
+      private_key = var.ec2_ssh_key
       host = self.public_ip
     }
   }
 
   #after verifying ssh, runs ansible playbook to set up docker image
   provisioner "local-exec" {
-    command = "ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i '${self.public_ip},' --private-key /mnt/c/Users/rwall/Downloads/DemoKeyPair.pem playbook.yml"
+    command = "ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i '${self.public_ip},' --private-key var.ec2_ssh_key playbook.yml"
   }
 }
 
