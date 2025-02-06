@@ -15,8 +15,16 @@ provider "aws" {
 #Access variable from github workflow
 variable "ec2_ssh_key" {}
 
+data "aws_security_groups" "existing_sg" {
+  filter {
+    name   = "group-name"
+    values = ["demo_app_security"]
+  }
+}
+
 #set security rules for instance
 resource "aws_security_group" "allow_ssh_http" {
+  count       = length(data.aws_security_groups.existing_sg.ids) > 0 ? 0 : 1
   name = "demo_app_security"
   description = "Allow SSH and HTTP access"
 
@@ -50,7 +58,7 @@ resource "aws_instance" "terraform_server" {
   ami = "ami-0c614dee691cbbf37" #default amazon linux AMI
   instance_type = "t2.micro" #instance size
   key_name = "DemoKeyPair" # previously existing key pair
-  security_groups = [aws_security_group.allow_ssh_http.name] #references earlier defined security rules
+  security_groups = [aws_security_group.allow_ssh_http[0].name] #references earlier defined security rules
 
   tags = {
     name = "Demo-EC2"
