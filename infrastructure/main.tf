@@ -14,6 +14,11 @@ provider "aws" {
 
 variable "ec2_ssh_key" {}
 
+resource "local_file" "ec2_ssh_key" {
+  content  = var.ec2_ssh_key
+  filename = "/tmp/my_key.pem"
+}
+
 #check if security group has already been created
 data "aws_security_group" "existing_sg" {
   filter {
@@ -78,7 +83,9 @@ resource "aws_instance" "terraform_server" {
 
   #after verifying ssh, runs ansible playbook to set up docker image
   provisioner "local-exec" {
-    command = "ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i '${self.public_ip},' --private-key '~/.ssh/id_rsa' playbook.yml"
+    # command = "ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i '${self.public_ip},' --private-key /mnt/c/Users/rwall/Downloads/DemoKeyPair.pem playbook.yml"
+    # command = "ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i '${self.public_ip},' --private-key '${var.ec2_ssh_key}' playbook.yml"
+    command = "ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i '${self.public_ip},' --private-key 'local.local_file.ec2_ssh_key.filename' playbook.yml"
   }
 }
 
