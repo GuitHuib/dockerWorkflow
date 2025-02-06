@@ -12,8 +12,16 @@ provider "aws" {
   region = "us-east-1"
 }
 
+#Access variable from github workflow
 variable "ec2_ssh_key" {}
 
+#check if security group already exists
+data "aws_security_group" "existing_sg" {
+  filter {
+    name   = "group-name"
+    values = ["demo_app_security"]
+  }
+}
 #set security rules for instance
 resource "aws_security_group" "allow_ssh_http" {
   name = "demo_app_security"
@@ -74,7 +82,6 @@ resource "aws_instance" "terraform_server" {
       echo "${var.ec2_ssh_key}" > /tmp/private_key.pem
       chmod 600 /tmp/private_key.pem
       ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i '${self.public_ip},' --private-key /tmp/private_key.pem -vvvv ./playbook.yml
-      # ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i '${self.public_ip},' --private-key <(echo "${var.ec2_ssh_key}") -vvvv ./playbook.yml
       rm -f /tmp/private_key.pem
     EOT
   }
