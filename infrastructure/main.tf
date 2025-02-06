@@ -16,7 +16,7 @@ variable "ec2_ssh_key" {}
 
 #set security rules for instance
 resource "aws_security_group" "allow_ssh_http" {
-  name = "allow_ssh_http"
+  name = "demo_app_security"
   description = "Allow SSH and HTTP access"
 
   ingress {
