@@ -15,8 +15,16 @@ provider "aws" {
 #Access variable from github workflow
 variable "ec2_ssh_key" {}
 
+#check if security group already exists
+data "aws_security_groups" "existing_sg" {
+  filter {
+    name   = "group-name"
+    values = ["demo_app_security"]
+  }
+}
 #set security rules for instance
 resource "aws_security_group" "allow_ssh_http" {
+  count = length(data.aws_security_groups.existing_sg.ids) > 0 ? 0 : 1
   name = "demo_app_security"
   description = "Allow SSH and HTTP access"
 
