@@ -14,8 +14,16 @@ provider "aws" {
 
 variable "ec2_ssh_key" {}
 
+#check if security group has already been created
+data "aws_security_group" "existing_sg" {
+  filter {
+    name = "group_name"
+    values = ["demo_app_security"]
+  }
+}
 #set security rules for instance
 resource "aws_security_group" "allow_ssh_http" {
+  count = length(data.aws_security_group.existing_sg.id) == 0 ? 1 : 0
   name = "demo_app_security"
   description = "Allow SSH and HTTP access"
 
@@ -70,7 +78,7 @@ resource "aws_instance" "terraform_server" {
 
   #after verifying ssh, runs ansible playbook to set up docker image
   provisioner "local-exec" {
-    command = "ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i '${self.public_ip},' --private-key '${var.ec2_ssh_key}' playbook.yml"
+    command = "ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i '${self.public_ip},' --private-key '~/.ssh/id_rsa' playbook.yml"
   }
 }
 

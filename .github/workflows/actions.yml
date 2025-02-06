@@ -72,6 +72,14 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
 
+      - name: Make private key available
+        run: echo "${{ secrets.EC2_SSH_KEY }}" > ~/.ssh/id_rsa
+        env:
+          EC2_SSH_KEY: ${{ secrets.EC2_SSH_KEY }}
+
+      - name: Set permissions for provate key
+        run: chmod 600 ~/.ssh/id_rsa
+
       - name: Install terraform
         uses: hashicorp/setup-terraform@v2
         with:
