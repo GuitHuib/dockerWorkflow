@@ -14,25 +14,8 @@ provider "aws" {
 
 variable "ec2_ssh_key" {}
 
-output "ec2_ssh_key" {
-  value = var.ec2_ssh_key
-}
-
-resource "local_file" "ec2_ssh_key" {
-  content  = var.ec2_ssh_key
-  filename = "/tmp/my_key.pem"
-}
-
-#check if security group has already been created
-# data "aws_security_group" "existing_sg" {
-#   filter {
-#     name = "group_name"
-#     values = ["demo_app_security"]
-#   }
-# }
 #set security rules for instance
 resource "aws_security_group" "allow_ssh_http" {
-  # count = length(data.aws_security_group.existing_sg.id) == 0 ? 1 : 0
   name = "demo_app_security"
   description = "Allow SSH and HTTP access"
 
@@ -87,14 +70,8 @@ resource "aws_instance" "terraform_server" {
 
   #after verifying ssh, runs ansible playbook to set up docker image
   provisioner "local-exec" {
-    # environment = {
-    #   ANSIBLE_SSH_PRIVATE_KEY = var.ec2_ssh_key
-    # }
-    # command = "ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i '${self.public_ip},' --private-key /mnt/c/Users/rwall/Downloads/DemoKeyPair.pem playbook.yml"
-    # command = "ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i '${self.public_ip},' --private-key '${var.ec2_ssh_key}' playbook.yml"
-    # command = "ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i '${self.public_ip},' --private-key '${local.local_file.ec2_ssh_key.filename}' playbook.yml"
-    # command = "ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i '${self.public_ip},' playbook.yml"
     command = <<EOT
+      sleep 30
       echo "${var.ec2_ssh_key} "
       echo "Connecting to ${self.public_ip}"
       echo "${var.ec2_ssh_key}" > /tmp/private_key.pem
@@ -105,10 +82,6 @@ resource "aws_instance" "terraform_server" {
       rm -f /tmp/private_key.pem
     EOT
   }
-
-  # provisioner "local-exec" {
-  #   command = "ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i '${self.public_ip},' --private-key '${var.ec2_ssh_key}' playbook.yml"
-  # }
 }
 
 #output ip address for us to reference as needed
