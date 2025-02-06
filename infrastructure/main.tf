@@ -73,8 +73,8 @@ resource "aws_instance" "terraform_server" {
     command = <<EOT
       echo "${var.ec2_ssh_key}" > /tmp/private_key.pem
       chmod 600 /tmp/private_key.pem
-      # ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i '${self.public_ip},' --private-key /tmp/private_key.pem -vvvv ./playbook.yml
-      ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i '${self.public_ip},' --private-key <(echo "${var.ec2_ssh_key}") -vvvv ./playbook.yml
+      ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i '${self.public_ip},' --private-key /tmp/private_key.pem -vvvv ./playbook.yml
+      # ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i '${self.public_ip},' --private-key <(echo "${var.ec2_ssh_key}") -vvvv ./playbook.yml
       rm -f /tmp/private_key.pem
     EOT
   }
