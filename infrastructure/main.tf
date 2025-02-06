@@ -62,7 +62,7 @@ resource "aws_instance" "terraform_server" {
   ami = "ami-0c614dee691cbbf37" #default amazon linux AMI
   instance_type = "t2.micro" #instance size
   key_name = "DemoKeyPair" # previously existing key pair
-  security_groups = [aws_security_group.allow_ssh_http.name] #references earlier defined security rules
+  # security_groups = [aws_security_group.allow_ssh_http.name] #references earlier defined security rules
 
   tags = {
     name = "Demo-EC2"
