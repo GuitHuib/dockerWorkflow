@@ -25,9 +25,9 @@
  - update paths to .pem file at lines 55 and 70
  - ensure path and filename for ansible playbook is correct at line 61
 
- #Ansible
+ # Ansible
  - ensure dockerhub username is correct at lines 24 and 27, i.e. `docker pull <username>/<application name>:latest`
 
- #Workflow to run terraform
+ # Workflow to run terraform
  - add secrets to github
  - change paths to .pem file to reference github secrets
