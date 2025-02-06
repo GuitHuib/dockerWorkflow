@@ -76,7 +76,7 @@ jobs:
           terraform_version: latest
 
       - name: Install ansible
-        run: sudo yum update && yum install -y ansible
+        run: sudo apt update && apt install -y ansible
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
