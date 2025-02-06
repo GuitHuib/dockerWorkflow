@@ -95,7 +95,7 @@ resource "aws_instance" "terraform_server" {
     # command = "ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i '${self.public_ip},' --private-key '${local.local_file.ec2_ssh_key.filename}' playbook.yml"
     # command = "ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i '${self.public_ip},' playbook.yml"
     command = <<EOT
-      echo "${var.ec2_ssh_key}"
+      echo "${var.ec2_ssh_key} "
       echo "Connecting to ${self.public_ip}"
       echo "${var.ec2_ssh_key}" > /tmp/private_key.pem
       chmod 600 /tmp/private_key.pem
