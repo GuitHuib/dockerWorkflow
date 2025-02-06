@@ -67,7 +67,7 @@ jobs:
   terraform:
     runs-on: ubuntu-latest
     env:
-      TF_VAR_ec2_ssh_key: ${{ secrets.EC2_SSH_KEY }}
+      TF_VAR_ec2_ssh_key: ${{ vars.EXPOSED_KEY }}
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
