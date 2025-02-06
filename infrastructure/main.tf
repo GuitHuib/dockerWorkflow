@@ -70,20 +70,11 @@ resource "aws_instance" "terraform_server" {
 
   #after verifying ssh, runs ansible playbook to set up docker image
   provisioner "local-exec" {
-    # environment = {
-    #   ANSIBLE_SSH_PRIVATE_KEY = var.ec2_ssh_key
-    # }
-    # command = "ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i '${self.public_ip},' --private-key /mnt/c/Users/rwall/Downloads/DemoKeyPair.pem playbook.yml"
-    # command = "ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i '${self.public_ip},' --private-key '${var.ec2_ssh_key}' playbook.yml"
-    # command = "ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i '${self.public_ip},' --private-key '${local.local_file.ec2_ssh_key.filename}' playbook.yml"
-    # command = "ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i '${self.public_ip},' playbook.yml"
     command = <<EOT
-      echo "Connecting to ${self.public_ip}"
       echo "${var.ec2_ssh_key}" > /tmp/private_key.pem
       chmod 600 /tmp/private_key.pem
-      pwd
-      ls -l
-      ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i '${self.public_ip},' --private-key /tmp/private_key.pem -vvvv ./playbook.yml
+      # ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i '${self.public_ip},' --private-key /tmp/private_key.pem -vvvv ./playbook.yml
+      ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i '${self.public_ip},' --private-key <(echo "${var.ec2_ssh_key}") -vvvv ./playbook.yml
       rm -f /tmp/private_key.pem
     EOT
   }
