@@ -70,7 +70,7 @@ resource "aws_instance" "terraform_server" {
 
   #after verifying ssh, runs ansible playbook to set up docker image
   provisioner "local-exec" {
-    command = "ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i '${self.public_ip},' --private-key var.ec2_ssh_key playbook.yml"
+    command = "ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i '${self.public_ip},' --private-key '${var.ec2_ssh_key}' playbook.yml"
   }
 }
 
