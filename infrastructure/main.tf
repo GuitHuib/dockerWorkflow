@@ -15,17 +15,17 @@ provider "aws" {
 #Access variable from github workflow
 variable "ec2_ssh_key" {}
 
-#Set up s3 bucket to store terraform state, ensuring idempotency
-resource "aws_s3_bucket" "terraform_state" {
-  bucket = "tfstate-bucket-ryan"
-}
-
-resource "aws_s3_bucket_versioning" "versioning" {
-  bucket = aws_s3_bucket.terraform_state.id
-  versioning_configuration {
-    status = "Enabled"
-  }
-}
+# #Set up s3 bucket to store terraform state, ensuring idempotency
+# resource "aws_s3_bucket" "terraform_state" {
+#   bucket = "tfstate-bucket-ryan"
+# }
+#
+# resource "aws_s3_bucket_versioning" "versioning" {
+#   bucket = aws_s3_bucket.terraform_state.id
+#   versioning_configuration {
+#     status = "Enabled"
+#   }
+# }
 
 #Tell terraform to use remote state configured above
 terraform {
