@@ -17,7 +17,7 @@ variable "ec2_ssh_key" {}
 
 #Set up s3 bucket to store terraform state, ensuring idempotency
 resource "aws_s3_bucket" "terraform_state" {
-  bucket = "tf_state_bucket"
+  bucket = "tfstate-bucket-ryan"
 }
 
 resource "aws_s3_bucket_versioning" "versioning" {
@@ -30,7 +30,7 @@ resource "aws_s3_bucket_versioning" "versioning" {
 #Tell terraform to use remote state configured above
 terraform {
   backend "s3" {
-    bucket = "tf_state_bucket"
+    bucket = "tfstate-bucket-ryan"
     key = "terraform.tfstate"
     region = "us-east-1"
     encrypt = true
