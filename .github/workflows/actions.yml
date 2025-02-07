@@ -91,6 +91,10 @@ jobs:
         run: terraform init
         working-directory: infrastructure
 
+      - name: Terraform plan
+        run: terraform plan -out=tfplan
+        working-directory: infrastructure
+
       - name: Terraform apply
         run: terraform apply --auto-approve
         working-directory: infrastructure
