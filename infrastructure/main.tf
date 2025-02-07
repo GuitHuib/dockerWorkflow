@@ -16,75 +16,75 @@ provider "aws" {
 variable "ec2_ssh_key" {}
 
 #Previously created security group
-data "aws_security_group" "existing_sg" {
-  filter {
-    name   = "group-name"
-    values = ["demo_app_security"]
-  }
-}
-
-#set security rules for instance
-resource "aws_security_group_rule" "allow_ssh" {
-  type              = "ingress"
-  from_port         = 22
-  to_port           = 22
-  protocol          = "tcp"
-  cidr_blocks       = ["0.0.0.0/0"]
-  security_group_id = data.aws_security_group.existing_sg.id
-}
-
-resource "aws_security_group_rule" "allow_http" {
-  type              = "ingress"
-  from_port         = 8080
-  to_port           = 8080
-  protocol          = "tcp"
-  cidr_blocks       = ["0.0.0.0/0"]
-  security_group_id = data.aws_security_group.existing_sg.id
-}
-
-resource "aws_security_group_rule" "allow_egress" {
-  type              = "egress"
-  from_port         = 0
-  to_port           = 0
-  protocol          = "-1"
-  cidr_blocks       = ["0.0.0.0/0"]
-  security_group_id = data.aws_security_group.existing_sg.id
-}
-# resource "aws_security_group" "allow_ssh_http" {
-#   name = "demo_app_security"
-#   description = "Allow SSH and HTTP access"
-#
-#   ingress {
-#     #allow ssh
-#     from_port = 22
-#     to_port = 22
-#     protocol = "tcp"
-#     cidr_blocks = ["0.0.0.0/0"]
-#   }
-#
-#   ingress {
-#     #allow http
-#     from_port = 8080
-#     to_port = 8080
-#     protocol = "tcp"
-#     cidr_blocks = ["0.0.0.0/0"]
-#   }
-#
-#   egress {
-#     #allow responses
-#     from_port = 0
-#     to_port = 0
-#     protocol = "-1"
-#     cidr_blocks = ["0.0.0.0/0"]
+# data "aws_security_group" "existing_sg" {
+#   filter {
+#     name   = "group-name"
+#     values = ["demo_app_security"]
 #   }
 # }
+#
+# #set security rules for instance
+# resource "aws_security_group_rule" "allow_ssh" {
+#   type              = "ingress"
+#   from_port         = 22
+#   to_port           = 22
+#   protocol          = "tcp"
+#   cidr_blocks       = ["0.0.0.0/0"]
+#   security_group_id = data.aws_security_group.existing_sg.id
+# }
+#
+# resource "aws_security_group_rule" "allow_http" {
+#   type              = "ingress"
+#   from_port         = 8080
+#   to_port           = 8080
+#   protocol          = "tcp"
+#   cidr_blocks       = ["0.0.0.0/0"]
+#   security_group_id = data.aws_security_group.existing_sg.id
+# }
+#
+# resource "aws_security_group_rule" "allow_egress" {
+#   type              = "egress"
+#   from_port         = 0
+#   to_port           = 0
+#   protocol          = "-1"
+#   cidr_blocks       = ["0.0.0.0/0"]
+#   security_group_id = data.aws_security_group.existing_sg.id
+# }
+resource "aws_security_group" "allow_ssh_http" {
+  name = "demo_app_security"
+  description = "Allow SSH and HTTP access"
+
+  ingress {
+    #allow ssh
+    from_port = 22
+    to_port = 22
+    protocol = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    #allow http
+    from_port = 8080
+    to_port = 8080
+    protocol = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  egress {
+    #allow responses
+    from_port = 0
+    to_port = 0
+    protocol = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
 
 #define ec2 instance
 resource "aws_instance" "terraform_server" {
   ami = "ami-0c614dee691cbbf37" #default amazon linux AMI
   instance_type = "t2.micro" #instance size
   key_name = "DemoKeyPair" # previously existing key pair
-  security_groups = [data.aws_security_group.existing_sg.name] #references earlier defined security rules
+  security_groups = [aws_security_group.allow_ssh_http.name] #references earlier defined security rules
 
   tags = {
     name = "Demo-EC2"
