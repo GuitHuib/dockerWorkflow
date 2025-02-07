@@ -12,20 +12,9 @@ provider "aws" {
   region = "us-east-1"
 }
 
-#Access variable from github workflow
+#Access variable from github workflow.
+##ONE POSSIBLE APPROACH##
 variable "ec2_ssh_key" {}
-
-# #Set up s3 bucket to store terraform state, ensuring idempotency
-# resource "aws_s3_bucket" "terraform_state" {
-#   bucket = "tfstate-bucket-ryan"
-# }
-#
-# resource "aws_s3_bucket_versioning" "versioning" {
-#   bucket = aws_s3_bucket.terraform_state.id
-#   versioning_configuration {
-#     status = "Enabled"
-#   }
-# }
 
 #Tell terraform to use remote state configured above
 terraform {
@@ -37,41 +26,6 @@ terraform {
   }
 }
 
-#Previously created security group
-# data "aws_security_group" "existing_sg" {
-#   filter {
-#     name   = "group-name"
-#     values = ["demo_app_security"]
-#   }
-# }
-#
-# #set security rules for instance
-# resource "aws_security_group_rule" "allow_ssh" {
-#   type              = "ingress"
-#   from_port         = 22
-#   to_port           = 22
-#   protocol          = "tcp"
-#   cidr_blocks       = ["0.0.0.0/0"]
-#   security_group_id = data.aws_security_group.existing_sg.id
-# }
-#
-# resource "aws_security_group_rule" "allow_http" {
-#   type              = "ingress"
-#   from_port         = 8080
-#   to_port           = 8080
-#   protocol          = "tcp"
-#   cidr_blocks       = ["0.0.0.0/0"]
-#   security_group_id = data.aws_security_group.existing_sg.id
-# }
-#
-# resource "aws_security_group_rule" "allow_egress" {
-#   type              = "egress"
-#   from_port         = 0
-#   to_port           = 0
-#   protocol          = "-1"
-#   cidr_blocks       = ["0.0.0.0/0"]
-#   security_group_id = data.aws_security_group.existing_sg.id
-# }
 resource "aws_security_group" "allow_ssh_http" {
   name = "demo_app_security"
   description = "Allow SSH and HTTP access"

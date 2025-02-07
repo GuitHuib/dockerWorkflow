@@ -21,7 +21,9 @@
         append: yes
 
     - name: Pull docker image
+      #UPDATE TO YOUR DOCKERHUB USERNAME
       command: docker pull ryansimages/app:latest
 
     - name: Run docker container
+      #UPDATE TO YOUR DOCKERHUB USERNAME
       command: docker run -d -p 8080:8080 --name demo-container ryansimages/app:latest

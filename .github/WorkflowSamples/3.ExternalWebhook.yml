@@ -1,0 +1,14 @@
+name: External Webhook
+
+on:
+  #Define an action to respond to a webhook, rather than a push or pull
+  repository_dispatch:
+    types: 
+    - webhook
+
+jobs:
+  hello_world:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run script
+        run: 'echo Event type: $GITHUB_EVENT_NAME'

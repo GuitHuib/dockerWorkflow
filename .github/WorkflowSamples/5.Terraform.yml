@@ -1,0 +1,46 @@
+name: Build and save image to dockerhub
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  terraform:
+    #Create job to run terraform file from inside github actions
+    #NEEDED: aws credentials storage and setup, dependency installations, passing of any needed variable to terraform,
+    # PEM file or other aws access token will need to be created and saved for your account, and
+    # passed to both terraform and ansible. Watch out for correct token formats at each step(string vs file path, etc.)
+    # The env variable below is one possible method of passing secrets to terraform, but not the only
+    runs-on: ubuntu-latest
+    env:
+      TF_VAR_ec2_ssh_key: ${{ secrets.EC2_SSH_KEY }}
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Install terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: latest
+
+      - name: Install ansible
+        run: sudo apt update && sudo apt install -y ansible
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      - name: Terraform init
+        run: terraform init
+        working-directory: infrastructure
+
+      - name: Terraform plan
+        run: terraform plan -out=tfplan
+        working-directory: infrastructure
+
+      - name: Terraform apply
+        run: terraform apply --auto-approve
+        working-directory: infrastructure
